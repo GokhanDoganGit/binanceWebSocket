@@ -1,0 +1,5 @@
+spring:
+  application:
+    name: binance-websocket-price-data
+
+symbols: btcusdt, ethusdt, xrpusdt
