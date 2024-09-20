@@ -18,14 +18,19 @@ import org.springframework.web.socket.handler.TextWebSocketHandler;
 public class BinanceWebSocketHandler extends TextWebSocketHandler {
 
   private final ObjectMapper objectMapper = new ObjectMapper();
-
   private final ConcurrentHashMap<String, String> binanceData = new ConcurrentHashMap<>();
+  private static final long TIME_LIMIT_MS = 5000;
 
   @Override
   public void handleTextMessage(WebSocketSession session, TextMessage message) {
     try {
       BinanceMessage binanceMessage = objectMapper.readValue(message.getPayload(), BinanceMessage.class);
-      binanceData.put(binanceMessage.s(), binanceMessage.p());
+      if (System.currentTimeMillis() - binanceMessage.E() <= TIME_LIMIT_MS) {
+        binanceData.put(binanceMessage.s(), binanceMessage.p());
+      }
+      else {
+        log.warn("Received price data older than 5 seconds, ignoring: {}", message.getPayload());
+      }
       log.info("For symbol {} price is: {}", binanceMessage.s(), binanceMessage.p());
     } catch (JsonProcessingException e) {
       log.error(e.getMessage());

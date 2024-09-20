@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public record BinanceMessage(
     String s,
-    String p
+    String p,
+    long E
 ) {
 }
